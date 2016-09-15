@@ -1,0 +1,69 @@
+<header id="header" class="navbar-static-top">
+    <div class="topnav hidden-xs">
+        <div class="container">            
+            <ul class="quick-menu pull-right">
+                <li class="ribbon currency">
+                    <a>{{currentCurrency.Code+' - '+currentCurrency.Symbol}}</a>
+                    <ul class="menu mini">
+                        <li data-ng-class="{'active':currentCurrency.Code==currency.Code}" data-ng-repeat="currency in currencies"><a data-ng-click="setCurrency(currency.Code)">{{::currency.Code+' - '+currency.Symbol}}</a></li>
+                    </ul>
+                </li>
+            </ul>
+            <ul class="quick-menu pull-right">
+                <li class="ribbon currency">
+                    <a>{{currentCountry.Name}}</a>
+                    <ul class="menu mini country">
+                        <li data-ng-repeat="country in countries" data-ng-class="{'active':currentCountry.Code==country.Code}"><a data-ng-click="setCountry(country.Code)">{{::country.Name}}</a></li>
+                    </ul>
+                </li>
+            </ul>
+        </div>
+    </div>
+
+    <div class="main-header">
+
+        <a href="#mobile-menu-01" data-toggle="collapse" class="mobile-menu-toggle">
+                    Mobile Menu Toggle
+                </a>
+
+        <div class="container">
+            <h1 class="logo navbar-brand">
+                <a ui-sref="home" title="Travelo">
+                    <img src="images/logo.jpg" alt="Travelo" />
+                </a>
+            </h1>
+            <nav id="main-menu" role="navigation">
+                <ul class="menu">
+                    <li ui-sref-active="active"><a ui-sref="home"><img src="../images/icon/home.png"/> Home</a></li>
+                    <li ui-sref-active="active"><a ui-sref="about-us"><img src="../images/icon/about.png"/> About Us</a></li>
+                    <li ui-sref-active="active"><a ui-sref="contact-us"><img src="../images/icon/contact.png"/> Contact Us</a></li>
+                </ul>
+            </nav>
+        </div>
+
+        <nav id="mobile-menu-01" class="mobile-menu collapse">
+            <ul id="mobile-primary-menu" class="menu">
+                <li ui-sref-active="active"><a ui-sref="home">Home</a></li>
+                <li ui-sref-active="active"><a ui-sref="about-us">About Us</a></li>
+                <li ui-sref-active="active"><a ui-sref="contact-us">Contact Us</a></li>
+            </ul>
+
+            <ul class="mobile-topnav container">
+                <li class="ribbon currency">
+                    <a>{{currentCountry.Name}}</a>
+                    <ul class="menu mini">
+                        <li data-ng-repeat="country in countries" data-ng-class="{'active':currentCountry.Code==country.Code}"><a data-ng-click="setCountry(country.Code)">{{::country.Name}}</a></li>
+                    </ul>
+                </li>
+            </ul>
+            <ul class="mobile-topnav container">
+                <li class="ribbon currency">
+                    <a>{{currentCurrency.Code+' - '+currentCurrency.Symbol}}</a>
+                    <ul class="menu mini">
+                        <li data-ng-class="{'active':currentCurrency.Code==currency.Code}" data-ng-repeat="currency in currencies"><a data-ng-click="setCurrency(currency.Code)">{{::currency.Code+' - '+currency.Symbol}}</a></li>
+                    </ul>
+                </li>
+            </ul>
+        </nav>
+    </div>
+</header>

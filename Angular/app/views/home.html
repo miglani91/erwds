@@ -1,0 +1,323 @@
+<div class="welcome-screen">
+    <div class="search-box-wrapper">
+        <div class="search-box container">
+            <div class="taglines">
+                <div class="title">
+                    <p>Search Cheap Flights</p>
+                </div>
+                <div class="sub-title">
+                    <p>Find great flight deals from hundreds of airlines.</p>
+                </div>
+            </div>
+            <ul class="search-tabs clearfix">
+                <li class="active"><a href="#flights-tab" data-toggle="tab">FLIGHTS</a></li>
+            </ul>
+            <div class="search-tabs visible-mobile">
+                <ul id="mobile-search-tabs" class="search-tabs clearfix">
+                    <li class="active"><a href="#flights-tab">FLIGHTS</a></li>
+                </ul>
+            </div>
+            <div class="search-tab-content">
+                <div class="tab-pane fade active in" id="flights-tab">
+                    <div class="waiting-search" ng-show="searchForm.$valid && searchForm.$submitted && searching">
+                        <p><i class="fa fa-spinner fa-pulse fa-3x fa-fw"></i>
+                            <span class="sr-only">Loading...</span></p>
+                    </div>
+                    <form data-ng-submit="validateForm(searchForm) && search()" name="searchForm" ng-init="focus={};"
+                          novalidate>
+                        <div class="row">
+                            <div class="col-md-4">
+                                <label class="radio radio-inline" ng-class="{'checked':type.value==searchObj.tripType}"
+                                       ng-repeat="type in tripTypes">
+                                    <input type="radio" ng-click="configureDateElements()" name="tripType"
+                                           value="{{::type.key}}" data-ng-model="searchObj.tripType"/>{{::type.value}}
+                                </label>
+                            </div>
+                            <div class="direct-flight col-md-4">
+                                <div class="checkbox">
+                                    <label>
+                                        <input type="checkbox" name="directFlights"
+                                               data-ng-model="searchObj.directFlights"> Direct Flights Only
+                                    </label>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+
+                            <div class="col-md-4">
+                                <h4 class="title">Where</h4>
+
+                                <div class="form-group">
+                                    <label>Leaving From *</label>
+
+                                    <div field-tabindex="1" input-name="leavingFrom" field-required=true
+                                         angucomplete-alt id="leavingFrom"
+                                         focus-in="focus.leavingFrom=true;selectAllText('leavingFrom')"
+                                         focus-out="focus.leavingFrom=false;checkValidAutocomplete('leavingFrom',searchObj.leavingFrom)"
+                                         remote-url-request-formatter="formatSuggestedLocationsRequest"
+                                         remote-url-response-formatter="formatSuggestedLocationsResponse"
+                                         placeholder="Enter a country, city or airport" maxlength="50" pause="300"
+                                         selected-object="searchObj.leavingFrom"
+                                         remote-url="{{getSuggestedLocationsUrl()}}" remote-url-data-field="Places"
+                                         search-fields="titleText"
+                                         title-field="smallText"
+                                         description-field="largeText" minlength="3" input-class="input-text full-width"
+                                         match-class="highlight">
+                                    </div>
+                                    <span class="error-block"
+                                          ng-show="!focus.leavingFrom && searchForm.$submitted  && searchForm.leavingFrom.$error['autocomplete-required']">{{::messages.required}}</span>
+                                </div>
+                                <div class="form-group">
+                                    <label>Going To *</label>
+
+                                    <div field-tabindex="2" input-name="goingTo" field-required=true field-required
+                                         angucomplete-alt id="goingTo"
+                                         focus-in="focus.goingTo=true;selectAllText('goingTo')"
+                                         focus-out="focus.goingTo=false;checkValidAutocomplete('goingTo',searchObj.goingTo)"
+                                         remote-url-request-formatter="formatSuggestedLocationsRequest"
+                                         remote-url-response-formatter="formatSuggestedLocationsResponse"
+                                         placeholder="Enter a country, city or airport"
+                                         maxlength="50" pause="300" selected-object="searchObj.goingTo"
+                                         remote-url="{{getSuggestedLocationsUrl()}}"
+                                         remote-url-data-field="Places" search-fields="titleText"
+                                         title-field="smallText"
+                                         description-field="largeText" minlength="3"
+                                         input-class="input-text full-width" match-class="highlight"></div>
+                                    <span class="error-block"
+                                          ng-show="!focus.goingTo && searchForm.$submitted  && searchForm.goingTo.$error['autocomplete-required']">{{::messages.required}}</span>
+                                </div>
+                            </div>
+                            <div class="col-md-2">
+                                <h4 class="title">When</h4>
+                                <label>Departing On *</label>
+
+                                <div class="form-group row">
+                                    <div class="col-xs-12">
+                                        <div class="datepicker-wrap">
+                                            <input tabindex="3" type="text" readonly="readonly" id="date_from"
+                                                   name="date_from" autocomplete="false"
+                                                   ng-keydown="$event.preventDefault()"
+                                                   data-ng-model="searchObj.fromDate" class="input-text full-width"
+                                                   placeholder="MM/DD/YYYY"
+                                                    />
+                                        </div>
+                                    </div>
+                                </div>
+                                <label>Returning On {{(searchObj.tripType=='RET')?'*':''}}</label>
+
+                                <div class="form-group row">
+                                    <div class="col-xs-12">
+                                        <div class="datepicker-wrap" ng-if="searchObj.tripType=='RET'">
+                                            <input tabindex="4" type="text" readonly="readonly" id="date_to"
+                                                   name="date_to" autocomplete="false"
+                                                   ng-keydown="$event.preventDefault()" data-ng-model="searchObj.toDate"
+                                                   class="input-text full-width" placeholder="MM/DD/YYYY"/>
+                                        </div>
+                                        <div ng-if="searchObj.tripType!='RET'">
+                                            <input type="text" id="date_to" readonly="readonly" name="date_to"
+                                                   autocomplete="false" disabled class="input-text full-width"
+                                                   placeholder="<ONE WAY>"
+                                                    />
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <h4 class="title">Who</h4>
+
+                                <div class="form-group row">
+                                    <div class="col-xs-3">
+                                        <label>Adults*</label>
+
+                                        <div class="selector" ng-init="dataRange1 = range(1,seatRange)">
+                                            <select tabindex="{{searchObj.tripType!='RET'?4:5}}" id="adults"
+                                                    class="full-width" data-ng-options="o as o for o in dataRange1"
+                                                    data-ng-model="searchObj.adults"> </select>
+                                        </div>
+                                    </div>
+                                    <div class="col-xs-3">
+                                        <label>Kids *</label>
+
+                                        <div class="selector" ng-init="dataRange2 = range(0,seatRange)">
+                                            <select id="kids" tabindex="{{searchObj.tripType!='RET'?5:6}}"
+                                                    class="full-width" data-ng-options="o as o for o in dataRange2"
+                                                    data-ng-model="searchObj.kids">
+                                            </select>
+                                        </div>
+                                    </div>
+                                    <div class="col-xs-6">
+                                        <label>Cabin Class *</label>
+
+                                        <div class="selector">
+                                            <select id="cabinClass" tabindex="{{searchObj.tripType!='RET'?7:8}}"
+                                                    class="full-width"
+                                                    data-ng-options="class.key as class.value for class in cabinClasses"
+                                                    data-ng-model="searchObj.cabinClass">
+                                            </select>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="form-group row">
+                                    <div class="col-xs-4">
+                                        <label>Infants *</label>
+
+                                        <div class="selector" ng-init="dataRange3 = range(0,seatRange)">
+                                            <select id="infants" tabindex="{{searchObj.tripType!='RET'?6:7}}"
+                                                    data-ng-options="o as o for o in dataRange3"
+                                                    data-ng-model="searchObj.infants"
+                                                    class="full-width">
+                                            </select>
+                                        </div>
+                                        <span class="error-block"
+                                              ng-show="searchForm.$submitted && searchObj.infants>searchObj.adults">{{::messages.infantsGreaterThanAdults}}</span>
+                                    </div>
+                                    <div class="col-xs-6 pull-right">
+                                        <label>&nbsp;</label>
+                                        <button ng-disabled="searchForm.$valid && searchForm.$submitted && searching"
+                                                class="full-width icon-check" type="submit">{{(searchForm.$valid &&
+                                            searchForm.$submitted && searching)?'PLEASE WAIT...':'SEARCH NOW'}}
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="clients">
+    <div class="tagline">
+        <p>Fastest way to find cheapest flights from 1000s of airlines and travel agents</p>
+    </div>
+    <div class="brands container">
+        <div class="row">
+            <div class="col-xs-4 col-sm-2 col-md-2"><img src="../images/jetblue.jpg"/></div>
+            <div class="col-xs-4 col-sm-2 col-md-2"><img src="../images/expedia.jpg"/></div>
+            <div class="col-xs-4 col-sm-2 col-md-2"><img src="../images/airindia.jpg"/></div>
+            <div class="col-xs-4 col-sm-2 col-md-2"><img src="../images/travelvelocity.jpg"/></div>
+            <div class="col-xs-4 col-sm-2 col-md-2"><img src="../images/virginatlantic.jpg"/></div>
+            <div class="col-xs-4 col-sm-2 col-md-2"><img src="../images/britishairways.jpg"/></div>
+        </div>
+    </div>
+</div>
+<div class="newsletter">
+    <div class="title">
+        <p>Travel Deals & News</p>
+    </div>
+    <div class="sub-title" ng-show="signUpSuccess">
+        <p>Thanks a lot for signing up. We will make sure you enjoy our travel deals.</p>
+    </div>
+    <div class="sub-title" ng-show="signUpError">
+        <p>There was a error in signing you up. Please report it to us.</p>
+    </div>
+    <div class="sub-title" ng-hide="signUpSuccess || signUpError">
+        <p>Sign up to the Cheapflights Newsletter and receive Exclusive Deals and Special Offers from the Travel
+            experts. </p>
+    </div>
+    <div class="form container" ng-hide="signUpSuccess || signUpError">
+        <form class="signup-form" name="signUpForm" ng-init="focus={}" ng-submit="validateForm(signUpForm) && signUp()"
+              novalidate>
+            <div class="row">
+                <div class="col-md-1"></div>
+                <div class="col-md-3">
+                    <div class="input-group">
+                        <span class="input-group-addon" id="basic-addon1"><i
+                                class="glyphicon glyphicon-user"></i></span>
+                        <input type="text" ng-disabled="signUpRequest" ng-focus="focus.firstname=true"
+                               ng-blur="focus.firstname=false" ng-model="signUpObj.firstname" name="firstname"
+                               class="form-control" placeholder="First Name" aria-describedby="basic-addon1" required>
+                    </div>
+                    <span class="error-block"
+                          ng-show="!focus.firstname && signUpForm.$submitted  && signUpForm.firstname.$error.required">{{::messages.required}}</span>
+                </div>
+                <div class="col-md-3">
+                    <div class="input-group">
+                        <span class="input-group-addon" id="basic-addon1"><i
+                                class="glyphicon glyphicon-user"></i></span>
+                        <input type="text" ng-disabled="signUpRequest" ng-focus="focus.lastname=true"
+                               ng-blur="focus.lastname=false" ng-model="signUpObj.lastname" name="lastname"
+                               class="form-control" placeholder="Last Name" aria-describedby="basic-addon1" required>
+
+                    </div>
+                    <span class="error-block"
+                          ng-show="!focus.lastname && signUpForm.$submitted  && signUpForm.lastname.$error.required">{{::messages.required}}</span>
+                </div>
+                <div class="col-md-3">
+                    <div class="input-group">
+                        <span class="input-group-addon" id="basic-addon1"><i
+                                class="glyphicon glyphicon-envelope"></i></span>
+                        <input type="email" ng-disabled="signUpRequest" ng-focus="focus.email=true"
+                               ng-blur="focus.email=false" ng-model="signUpObj.email" name="email" class="form-control"
+                               placeholder="Email Address" aria-describedby="basic-addon1" required>
+                    </div>
+                    <span class="error-block"
+                          ng-show="!focus.email && signUpForm.$submitted  && signUpForm.email.$error.required">{{::messages.required}}</span>
+                    <span class="error-block"
+                          ng-show="!focus.email && signUpForm.$submitted  && signUpForm.email.$error.email">{{::messages.invalidEmail}}</span>
+
+                </div>
+                <div class="col-md-2">
+                    <button type="submit" ng-disabled="signUpRequest" class="btn btn-default sign-up">Sign Up</button>
+                </div>
+            </div>
+        </form>
+    </div>
+    <div class="secure" ng-hide="signUpSuccess || signUpError">
+        <p>Your data is fully protected. You can unsubscribe at any time.</p>
+    </div>
+</div>
+<div class="why-us">
+    <div class="title">
+        <p>Why book with us?</p>
+    </div>
+    <div class="container">
+        <div class="row">
+            <div class="col-md-3">
+                <div class="icon">
+                    <img src="../images/icon/like.png" alt="icon"/>
+                </div>
+                <div class="heading">
+                    <p>Best Price Guarantee</p>
+                </div>
+                <div class="description">
+                    <p>Find our lowest price to destinations worldwide, guaranteed.</p>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="icon">
+                    <img src="../images/icon/check.png" alt="icon"/>
+                </div>
+                <div class="heading">
+                    <p>Easy Booking</p>
+                </div>
+                <div class="description">
+                    <p>Search, select and save - the fastest way to book your trip.</p>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="icon">
+                    <img src="../images/icon/travel.png" alt="icon"/>
+                </div>
+                <div class="heading">
+                    <p>Our Travel Offerings</p>
+                </div>
+                <div class="description">
+                    <p>No hidden charges, no added fees. Get the cheapest deals every time!</p>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="icon">
+                    <img src="../images/icon/lock.png" alt="icon"/>
+                </div>
+                <div class="heading">
+                    <p>Secure - 100% Safe</p>
+                </div>
+                <div class="description">
+                    <p>All flights and car advertised by our deal providers are fully protected.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

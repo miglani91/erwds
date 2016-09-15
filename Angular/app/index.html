@@ -1,0 +1,134 @@
+<!DOCTYPE html >
+<!--[if IE 8]>          <html class="ie ie8"> <![endif]-->
+<!--[if IE 9]>          <html class="ie ie9"> <![endif]-->
+<!--[if gt IE 9]><!-->
+<html>
+<!--<![endif]-->
+
+<head>
+  <!-- Page Title -->
+  <title>Compare Before Book</title>
+  <base href="/" />
+  <!-- Meta Tags -->
+  <meta charset="utf-8">
+  <meta name="keywords" content="" />
+  <meta name="description" content="">
+  <meta name="author" content="Laxaar">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="shortcut icon" href="favicon.ico" type="image/x-icon">
+  <link href='http://fonts.googleapis.com/css?family=Lato:400,700' rel='stylesheet' type='text/css' />
+
+  <!-- build:css(.) styles/vendor.css -->
+  <!-- bower:css -->
+  <link rel="stylesheet" href="/bower_components/components-font-awesome/css/font-awesome.css" />
+  <link rel="stylesheet" href="/bower_components/bootstrap/dist/css/bootstrap.css" />
+  <link rel="stylesheet" href="/bower_components/animate.css/animate.css" />
+  <link rel="stylesheet" type="text/css" href="/bower_components/angularjs-slider/disr/rzslider.css" media="screen" />
+  <link rel="stylesheet" type="text/css" href="/bower_components/bxslider-4/jquery.bxslider.css" media="screen" />
+  <link rel="stylesheet" type="text/css" href="/bower_components/flexslider/flexslider.css" media="screen" />
+  <!-- endbower -->
+  <!-- endbuild -->
+  <!-- build:css({.tmp,app}) styles/main.css -->
+  <!-- For Theme - start-->
+  <link rel="stylesheet" type="text/css" href="scripts/third-party/revolution_slider/css/settings.css" media="screen" />
+  <link rel="stylesheet" type="text/css" href="scripts/third-party/revolution_slider/css/style.css" media="screen" />
+  <link rel="stylesheet" href="styles/style.css">
+  <link rel="stylesheet" href="styles/updates.css">
+  <link rel="stylesheet" href="styles/custom.css">
+  <link rel="stylesheet" href="styles/responsive.css">
+  <!-- For Theme - end-->
+  <link rel="stylesheet" href="styles/main.css">
+  <!-- endbuild -->
+  <!-- CSS for IE -->
+  <!--[if lte IE 9]>
+        <link rel="stylesheet" type="text/css" href="styles/theme/ie.css" />
+    <![endif]-->
+
+
+  <!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
+  <!--[if lt IE 9]>
+      <script type='text/javascript' src="http://html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+      <script type='text/javascript' src="http://cdnjs.cloudflare.com/ajax/libs/respond.js/1.4.2/respond.js"></script>
+    <![endif]-->
+</head>
+
+<body data-ng-app="travel" data-ng-controller="MainCtrl">
+  <!--[if lte IE 8]>
+      <p class="browsehappy">You are using an <strong>outdated</strong> browser. Please <a href="http://browsehappy.com/">upgrade your browser</a> to improve your experience.</p>
+    <![endif]-->
+
+  <!-- Add your site or application content here -->
+
+  <div id="page-wrapper">
+    <ng-include src="'views/header.html'"></ng-include>
+    <main-view ui-view></main-view>
+    <ng-include src="'views/footer.html'"></ng-include>
+  </div>
+
+
+  <!-- Google Analytics: change UA-XXXXX-X to be your site's ID -->
+  <script>
+       !function(A,n,g,u,l,a,r){A.GoogleAnalyticsObject=l,A[l]=A[l]||function(){
+       (A[l].q=A[l].q||[]).push(arguments)},A[l].l=+new Date,a=n.createElement(g),
+       r=n.getElementsByTagName(g)[0],a.src=u,r.parentNode.insertBefore(a,r)
+       }(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+
+       ga('create', 'UA-XXXXX-X');
+       ga('send', 'pageview');
+    </script>
+  <script type='text/javascript' src="http://maps.google.com/maps/api/js?sensor=false&amp;language=en"></script>
+  <!-- build:js(.) scripts/vendor.js -->
+  <!-- bower:js -->
+  <script src="/bower_components/jquery/dist/jquery.js"></script>
+  <!-- For Theme - start-->
+  <script type="text/javascript" src="/bower_components/modernizer/modernizr.js"></script>
+  <script type="text/javascript" src="/bower_components/jquery-migrate/jquery-migrate.js"></script>
+  <script type="text/javascript" src="/bower_components/jquery-placeholder/jquery.placeholder.js"></script>
+  <script type="text/javascript" src="/bower_components/jquery-ui/ui/jquery-ui.js"></script>
+  <script src="/bower_components/bootstrap/dist/js/bootstrap.js"></script>
+  <script type="text/javascript" src="/bower_components/bxslider-4/jquery.bxslider.js"></script>
+  <script type="text/javascript" src="/bower_components/flexslider/jquery.flexslider.js"></script>
+  <script type="text/javascript" src="/bower_components/gmap3/dist/gmap3.js"></script>
+  <script type="text/javascript" src="/bower_components/jquery.stellar/jquery.stellar.js"></script>
+  <script type="text/javascript" src="/bower_components/jquery-waypoints/waypoints.js"></script>
+  <!-- For Theme - end-->
+  <script src="/bower_components/angular/angular.js"></script>
+  <!--     <script src="/bower_components/angular-cookies/angular-cookies.js"></script>
+    <script src="/bower_components/angular-messages/angular-messages.js"></script>
+    <script src="/bower_components/angular-resource/angular-resource.js"></script>
+    <script src="/bower_components/angular-sanitize/angular-sanitize.js"></script>
+    <script src="/bower_components/angular-touch/angular-touch.js"></script> -->
+  <script src="/bower_components/moment/moment.js"></script>
+  <script src="/bower_components/angular-ui-router/angular-ui-router.js"></script>
+  <script src="/bower_components/angucomplete-alt/angucomplete-alt.js"></script>
+  <script src="/bower_components/angularjs-slider/dist/rzsilder.js"></script>
+  <!-- endbower -->
+  <!-- endbuild -->
+
+  <!-- build:js({.tmp,app}) scripts/scripts.js -->
+  <script type="text/javascript" src="scripts/third-party/revolution_slider/js/jquery.themepunch.tools.min.js"></script>
+  <script type="text/javascript" src="scripts/third-party/revolution_slider/js/jquery.themepunch.revolution.min.js"></script>
+  <script type="text/javascript" src="scripts/third-party/calendar.js"></script>
+  <script type="text/javascript" src="scripts/theme/jquery.noconflict.js"></script>
+  <!--<script type="text/javascript" src="scripts/theme/theme-scripts.js"></script>-->
+  <!--<script type="text/javascript" src="scripts/theme/scripts.js"></script>-->
+  <script src="scripts/app.js"></script>
+  <script src="scripts/services/generic-data.js"></script>
+  <script src="scripts/services/theme-service.js"></script>
+  <script src="scripts/services/skyscanner-service.js"></script>
+  <script src="scripts/services/search-service.js"></script>
+  <script src="scripts/controllers/main.js"></script>
+  <script src="scripts/controllers/about-us.js"></script>
+  <script src="scripts/controllers/contact-us.js"></script>
+  <script src="scripts/controllers/list-view.js"></script>
+  <script src="scripts/controllers/grid-view.js"></script>
+  <script src="scripts/controllers/block-view.js"></script>
+  <script src="scripts/controllers/detailed-view.js"></script>
+  <script src="scripts/controllers/home.js"></script>
+
+  <script src="scripts/controllers/search-results.js"></script>
+  <script>window.prerenderReady = true</script>
+  <!-- endbuild -->
+</body>
+
+</html>

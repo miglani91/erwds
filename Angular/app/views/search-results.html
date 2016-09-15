@@ -1,0 +1,715 @@
+<section id="content">
+    <div class="container">
+        <div id="main">
+            <div class="row">
+                <div class="col-sm-4 col-md-3">
+                    <h4 class="search-results-title" ng-hide="loading"><i class="soap-icon-search"></i><b>{{totalCount()}}</b>
+                        results found.</h4>
+                    <h4 class="search-results-title" ng-show="loading"><i class="soap-icon-search"></i><b>Please
+                        wait...</b></h4>
+
+                    <div class="toggle-container filters-container">
+                        <div class="waiting-search" ng-show="loading">
+                            <p><i class="fa fa-spinner fa-pulse fa-3x fa-fw"></i>
+                                <span class="sr-only">Loading...</span></p>
+                        </div>
+                        <div class="panel style1 arrow-right">
+                            <h4 class="panel-title">
+                                <a data-toggle="collapse" data-target="#modify-search-panel"
+                                   class="{'collapsed' : !isMobile}">Modify Search</a>
+                            </h4>
+
+                            <div id="modify-search-panel" class="panel-collapse collapse" ng-class="{'in' : !isMobile}"
+                                 aria-expanded="{{::!isMobile}}">
+                                <div class="panel-content">
+                                    <form ng-init="focus={}" name="searchForm" novalidate
+                                          ng-submit=" validateForm(searchForm) && searchAgain()">
+                                        <div class="form-group">
+                                            <label class="radio radio-inline"
+                                                   ng-class="{'checked':type.value==filter.search.tripType}"
+                                                   ng-repeat="type in tripTypes">
+                                                <input type="radio" ng-click="configureDateElements()" name="tripType"
+                                                       value="{{::type.key}}" data-ng-model="filter.search.tripType"/>{{::type.value}}
+                                            </label>
+                                        </div>
+                                        <div class="form-group">
+                                            <label>Leaving from</label>
+
+                                            <div angucomplete-alt id="leavingFrom" input-name="leavingFrom"
+                                                 field-required=true focus-in="selectAllText('leavingFrom')"
+                                                 focus-out="checkValidAutocomplete('leavingFrom',filter.search.leavingFromObject)"
+                                                 remote-url-request-formatter="formatSuggestedLocationsRequest"
+                                                 remote-url-response-formatter="formatSuggestedLocationsResponse"
+                                                 placeholder="Enter a country, city or airport"
+                                                 maxlength="50" pause="300"
+                                                 selected-object="filter.search.leavingFromObject"
+                                                 remote-url="{{::getSuggestedLocationsUrl()}}"
+                                                 remote-url-data-field="Places"
+                                                 initial-value="filter.search.leavingFrom"
+                                                 search-fields="titleText"
+                                                 title-field="smallText"
+                                                 description-field="largeText"
+                                                 minlength="3" input-class="input-text full-width"
+                                                 match-class="highlight"></div>
+                                            <span class="error-block"
+                                                  ng-show="!focus.leavingFrom && searchForm.$submitted  && searchForm.leavingFrom.$error['autocomplete-required']">{{::messages.required}}</span>
+                                        </div>
+                                        <div class="form-group">
+                                            <label>Going To</label>
+
+                                            <div field-tabindex="2" input-name="goingTo" field-required=true
+                                                 field-required angucomplete-alt id="goingTo"
+                                                 focus-in="focus.goingTo=true;selectAllText('goingTo')"
+                                                 focus-out="focus.goingTo=false;checkValidAutocomplete('goingTo',filter.search.goingToObject)"
+                                                 remote-url-request-formatter="formatSuggestedLocationsRequest"
+                                                 remote-url-response-formatter="formatSuggestedLocationsResponse"
+                                                 placeholder="Enter a country, city or airport"
+                                                 maxlength="50" pause="300"
+                                                 selected-object="filter.search.goingToObject"
+                                                 remote-url="{{::getSuggestedLocationsUrl()}}"
+                                                 remote-url-data-field="Places" search-fields="titleText"
+                                                 title-field="smallText"
+                                                 description-field="largeText"
+                                                 initial-value="filter.search.goingTo"
+                                                 minlength="3" input-class="input-text full-width"
+                                                 match-class="highlight"></div>
+                                            <span class="error-block"
+                                                  ng-show="!focus.goingTo && searchForm.$submitted  && searchForm.goingTo.$error['autocomplete-required']">{{::messages.required}}</span>
+                                        </div>
+                                        <div class="form-group">
+                                            <label>Departure on</label>
+
+                                            <div class="datepicker-wrap">
+                                                <input type="text" name="date_from" readonly="readonly"
+                                                       ng-keydown="$event.preventDefault()"
+                                                       data-ng-model="filter.search.fromDate"
+                                                       class="input-text full-width" placeholder="MM/DD/YYYY"/>
+                                            </div>
+                                        </div>
+                                        <div class="form-group">
+                                            <label>Returning On</label>
+
+                                            <div class="datepicker-wrap" ng-if="filter.search.tripType=='RET'">
+                                                <input type="text" name="date_to" readonly="readonly"
+                                                       ng-keydown="$event.preventDefault()"
+                                                       data-ng-model="filter.search.toDate"
+                                                       class="input-text full-width" placeholder="MM/DD/YYYY"/>
+                                            </div>
+                                            <div ng-if="filter.search.tripType!='RET'">
+                                                <input type="text" readonly="readonly" name="date_to" disabled
+                                                       class="input-text full-width" placeholder="<ONE WAY>"/>
+                                            </div>
+                                        </div>
+                                        <div slass="form-group">
+                                            <label>Adults</label>
+
+                                            <div class="selector" ng-init="dataRange1 = range(1,seatRange)">
+                                                <select id="adults" class="full-width"
+                                                        data-ng-options="o as o for o in dataRange1"
+                                                        data-ng-model="filter.search.adults"> </select>
+                                            </div>
+                                        </div>
+
+                                        <div slass="form-group">
+                                            <label>Kids</label>
+
+                                            <div class="selector" ng-init="dataRange2 = range(0,seatRange)">
+                                                <select id="kids" class="full-width"
+                                                        data-ng-options="o as o for o in dataRange2"
+                                                        data-ng-model="filter.search.kids">
+                                                </select>
+                                            </div>
+                                        </div>
+                                        <div slass="form-group">
+                                            <label>Infants</label>
+
+                                            <div class="selector" ng-init="dataRange3 = range(0,seatRange)">
+                                                <select id="infants" data-ng-options="o as o for o in dataRange3"
+                                                        data-ng-model="filter.search.infants" class="full-width">
+                                                </select>
+                                            </div>
+                                        </div>
+                                        <div slass="form-group">
+                                            <label>Cabin Class</label>
+
+                                            <div class="selector">
+                                                <select class="full-width"
+                                                        data-ng-options="class.key as class.value for class in cabinClasses"
+                                                        data-ng-model="filter.search.cabinClass">
+                                                </select>
+                                            </div>
+                                        </div>
+                                        <br/>
+                                        <button type="submit" class="btn-medium icon-check uppercase full-width">search
+                                            again
+                                        </button>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="panel style1 arrow-right">
+                            <h4 class="panel-title">
+                                <a data-toggle="collapse" data-target="#flight-stops-filter"
+                                   class="{'collapsed' : !isMobile}">Maximum Flight Stops</a>
+                            </h4>
+
+                            <div id="flight-stops-filter" class="panel-collapse collapse" ng-class="{'in' : !isMobile}"
+                                 aria-expanded="{{::!isMobile}}">
+                                <div class="panel-content">
+                                    <ul>
+                                        <li>
+                                            <label class="radio radio-inline"
+                                                   ng-class="{'checked':filter.flightStops==0}">
+                                                <input type="radio" ng-model="filter.flightStops"
+                                                       ng-click="filterData()" name="stops" value=0/> 0 Stops
+                                            </label>
+                                        </li>
+                                        <li>
+                                            <label class="radio radio-inline"
+                                                   ng-class="{'checked':filter.flightStops==1}">
+                                                <input type="radio" ng-model="filter.flightStops"
+                                                       ng-click="filterData()" name="stops" value=1/> 1 Stops
+                                            </label>
+                                        </li>
+                                        <li>
+                                            <label class="radio radio-inline"
+                                                   ng-class="{'checked':filter.flightStops==2}">
+                                                <input type="radio" ng-model="filter.flightStops"
+                                                       ng-click="filterData()" name="stops" value=2/> 2 Stops
+                                            </label>
+                                        </li>
+                                        <!--<li>
+                                            <label class="radio radio-inline" ng-class="{'checked':filter.flightStops==3}">
+                                                <input type="radio" ng-model="filter.flightStops" ng-click="filterData()" name="stops" value=3 /> 3 Stops
+                                                </label>
+                                        </li>-->
+
+                                    </ul>
+
+                                </div>
+                            </div>
+                        </div>
+                        <div class="panel style1 arrow-right">
+                            <h4 class="panel-title">
+                                <a data-toggle="collapse" data-target="#flight-times-filter" ng-click="refreshSlider()"
+                                   class="{'collapsed' : !isMobile}">Departure Times</a>
+                            </h4>
+
+                            <div id="flight-times-filter" class="panel-collapse collapse" ng-class="{'in' : !isMobile}"
+                                 aria-expanded="{{::!isMobile}}">
+                                <div class="panel-content" id="flight-times1">
+                                    <h5>Outbound</h5>
+                                    <rzslider rz-slider-model="filter.departureTimes.outbound.min"
+                                              rz-slider-high="filter.departureTimes.outbound.max"
+                                              rz-slider-options="timeSliderOptions"></rzslider>
+                                </div>
+                                <div class="panel-content" id="flight-times2" ng-if="queryObj.toDate">
+                                    <h5>Return</h5>
+                                    <rzslider rz-slider-model="filter.departureTimes.return.min"
+                                              rz-slider-high="filter.departureTimes.return.max"
+                                              rz-slider-options="timeSliderOptions"></rzslider>
+                                </div>
+                            </div>
+                        </div>
+
+
+                        <div class="panel style1 arrow-right">
+                            <h4 class="panel-title">
+                                <a data-toggle="collapse" data-target="#airlines-filter"
+                                   class="{'collapsed' : !isMobile}">Airlines</a>
+                            </h4>
+
+                            <div id="airlines-filter" class="panel-collapse collapse" ng-class="{'in' : !isMobile}"
+                                 aria-expanded="{{::!isMobile}}">
+                                <div class="panel-content">
+                                    <ul class="check-square filters-option">
+                                        <li class="options"><a ng-click="setCarrierFilter(true);filterData();">SELECT
+                                            ALL</a> | <a ng-click="setCarrierFilter(false);filterData();">CLEAR ALL</a>
+                                        </li>
+                                        <li data-ng-repeat="carrier in carriers"
+                                            ng-click="filter.airlines[carrier.Id].set=!filter.airlines[carrier.Id].set;filterData();"
+                                            ng-class="{'active':filter.airlines[carrier.Id].set}">
+                                            <a>{{::carrier.Name}}</a></li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-sm-8 col-md-9">
+                    <!--<div class="sort-by-section clearfix box">-->
+                    <!--sort-by-section class somehow disabled the dropdown -->
+
+                    <div class="sort-panel clearfix box">
+                        <h4 class="sort-by-title block-sm">Sort results by:</h4>
+
+                        <div class="selector">
+                            <select class="full-width" ng-change="filterData()"
+                                    data-ng-options="option.key as option.value for option in sortOptions"
+                                    data-ng-model="filter.sorttype">
+                            </select>
+
+                        </div>
+                    </div>
+                    <div class="showing-results" ng-show="!loading">
+                        <div class="to">
+                            <span>Flight Results from</span>
+                            <span class="highlight">{{::queryObj.leavingFromDesc}}</span>
+                            <span>to</span>
+                            <span class="highlight">{{::queryObj.goingToDesc}}</span>
+                        </div>
+                        <div class="time-period">
+                            <span>Departing on</span>
+                            <span class="highlight">{{::getDateStringWithDay(queryObj.fromDate)}},</span>
+                            <span ng-if="queryObj.toDate">returning on</span>
+                            <span class="highlight"
+                                  ng-if="queryObj.toDate">{{::getDateStringWithDay(queryObj.toDate)}}</span>
+                        </div>
+                    </div>
+                    <div class="waiting" ng-show="loading">
+                        <div class=gif>
+                            <img src="images/loadericon.gif"/>
+                        </div>
+                        <div class="msg">
+                            <p>Just a moment more... we want to make sure we find you the cheapest price.</p>
+                        </div>
+                    </div>
+
+                    <div class="flight-list listing-style3 flight"
+                         data-ng-if="searchResults && searchResults[0].topResults && searchResults[0].topResults.length > 0">
+
+                        <div class="box">
+                            <h4>Top 5 Exclusive Deals - Compare and Save Big</h4>
+
+                            <div class="deal-options">
+                                <div class="row">
+                                    <div class="col-md-2 cheap-flights"
+                                         ng-repeat="option in searchResults[0].topResults track by $index">
+                                        <a ng-href="{{option.DeeplinkUrl}}" target="_blank">
+                                            <img ng-src="{{option.Agents[0].ImageUrl}}">
+                                        </a>
+                                    </div>
+                                </div>
+                            </div>
+
+                        </div>
+                        <!--<div class="box" data-ng-repeat="result in searchResults track by $index">-->
+                        <!--<pre>{{result.PricingOptions | json}}</pre>-->
+                        <!--</div>-->
+                    </div>
+
+                    <!--<button type="button" class="btn btn-primary" data-toggle="modal" data-target=".bs-example-modal-lg">Details</button>-->
+                    <div class="flight-list listing-style3 flight" data-ng-if="searchResults">
+                        <!--<dummy  ng-init="passengerCount = searchQuery.Adults+searchQuery.Children+searchQuery.Infants">-->
+                        <div class="box" data-ng-repeat="result in searchResults track by $index">
+                            <div class="row" ng-init="showDeals=false">
+                                <div class="column-one col-xs-12 col-sm-12 col-md-10">
+                                    <div class="row departure">
+                                        <div class="image col-xs-12 col-sm-2">
+                                            <img alt="" ng-src="{{::result.OutboundLeg.Carriers[0].ImageUrl}}"
+                                                 ng-if="result.OutboundLeg.Carriers.length==1">
+                                            <b ng-if="result.OutboundLeg.Carriers.length>1"
+                                               ng-repeat="carrier in result.OutboundLeg.Carriers">{{::carrier.Name}}{{::$last
+                                                ? '' : ', '}}</b>
+                                        </div>
+                                        <div class="col-xs-12 col-sm-10">
+                                            <div class="details-wrapper">
+                                                <div class="first-row">
+                                                    <div>
+                                                        <!--{{::result.OutboundLegId}}-->
+                                                        <h4 class="box-title">
+                                                            {{::result.OutboundLeg.OriginStation.Name}} to
+                                                            {{::result.OutboundLeg.DestinationStation.Name}}
+                                                            <small><!--Oneway flight--></small>
+                                                        </h4>
+                                                        <a class="button btn-mini stop"
+                                                           ng-click="openFlightDetails(result)">STOPS :
+                                                            {{::result.OutboundLeg.Stops.length}}</a>
+                                                    </div>
+                                                </div>
+                                                <div class="second-row">
+                                                    <div class="time">
+                                                        <div class="take-off col-xs-4 col-sm-4">
+                                                            <div class="icon"><i
+                                                                    class="soap-icon-plane-right yellow-color"></i>
+                                                            </div>
+                                                            <div>
+                                                                <span class="skin-color">Take off</span><br/>{{::parseDateToTime(result.OutboundLeg.Departure)}}
+                                                            </div>
+                                                        </div>
+                                                        <div class="landing col-xs-4 col-sm-4">
+                                                            <div class="icon"><i
+                                                                    class="soap-icon-plane-right yellow-color"></i>
+                                                            </div>
+                                                            <div>
+                                                                <span class="skin-color">landing</span><br/>
+                                                                <!--Wed Nov 13, 2013 9:20 am-->
+                                                                {{::parseDateToTime(result.OutboundLeg.Arrival)}}
+                                                            </div>
+                                                        </div>
+                                                        <div class="total-time col-xs-4 col-sm-4">
+                                                            <div class="icon"><i
+                                                                    class="soap-icon-clock yellow-color"></i></div>
+                                                            <div>
+                                                                <span class="skin-color">total time</span><br/>
+                                                                <!--13 Hour, 40 minutes-->
+                                                                {{::getHourString(result.OutboundLeg.Duration)}}
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="row return" ng-if="result.InboundLeg">
+                                        <div class="image col-xs-12 col-sm-2">
+                                            <img alt="" ng-src="{{::result.InboundLeg.Carriers[0].ImageUrl}}"
+                                                 ng-if="result.InboundLeg.Carriers.length==1">
+                                            <b ng-if="result.InboundLeg.Carriers.length>1"
+                                               ng-repeat="carrier in result.InboundLeg.Carriers">{{::carrier.Name}}{{::$last
+                                                ? '' : ', '}}</b>
+                                        </div>
+                                        <div class="col-xs-12 col-sm-10">
+                                            <div class="details-wrapper">
+                                                <div class="first-row">
+                                                    <div>
+                                                        <h4 class="box-title">{{::result.InboundLeg.OriginStation.Name}}
+                                                            to {{::result.InboundLeg.DestinationStation.Name}}
+                                                            <small><!--Oneway flight--></small>
+                                                        </h4>
+                                                        <a class="button btn-mini stop"
+                                                           ng-click="openFlightDetails(result)">STOPS :
+                                                            {{::result.InboundLeg.Stops.length}}</a>
+                                                    </div>
+                                                </div>
+                                                <div class="second-row">
+                                                    <div class="time">
+                                                        <div class="take-off col-xs-4 col-sm-4">
+                                                            <div class="icon"><i
+                                                                    class="soap-icon-plane-right yellow-color"></i>
+                                                            </div>
+                                                            <div>
+                                                                <span class="skin-color">Take off</span><br/>{{::parseDateToTime(result.InboundLeg.Departure)}}
+                                                            </div>
+                                                        </div>
+                                                        <div class="landing col-xs-4 col-sm-4">
+                                                            <div class="icon"><i
+                                                                    class="soap-icon-plane-right yellow-color"></i>
+                                                            </div>
+                                                            <div>
+                                                                <span class="skin-color">landing</span><br/>
+                                                                <!--Wed Nov 13, 2013 9:20 am-->
+                                                                {{::parseDateToTime(result.InboundLeg.Arrival)}}
+                                                            </div>
+                                                        </div>
+                                                        <div class="total-time col-xs-4 col-sm-4">
+                                                            <div class="icon"><i
+                                                                    class="soap-icon-clock yellow-color"></i></div>
+                                                            <div>
+                                                                <span class="skin-color">total time</span><br/>
+                                                                <!--13 Hour, 40 minutes-->
+                                                                {{::getHourString(result.InboundLeg.Duration)}}
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="column-two col-xs-12 col-sm-12 col-md-2"
+                                     ng-class="{'one-way-col':!result.InboundLeg}">
+                                    <div class="row" ng-init="deals = result.PricingOptions.length;">
+                                        <div class="price-info col-sm-8 col-md-12" ng-show="result.PricingOptions[0]">
+                                            <div class="row">
+                                                <p class="price col-sm-6 col-md-12">
+                                                    <span class="title">AVG/PERSON</span>
+                                                    <span class="value">{{currentCurrency.Symbol+' '+(result.PricingOptions[0].Price/(searchQuery.Adults+searchQuery.Children+searchQuery.Infants)  | currency:"":2)}}</span>
+                                                </p>
+
+                                                <p class="price col-sm-6 col-md-12">
+                                                    <span class="title">TOTAL</span>
+                                                    <span class="value">{{currentCurrency.Symbol+' '+ (result.PricingOptions[0].Price | currency:"":2)}}</span>
+                                                </p>
+
+                                                <p class="price agent col-sm-6 col-md-12">
+                                                    <span class="title"></span>
+                                                    <span class="value">{{result.PricingOptions[0].Agents[0].Name}}</span>
+                                                </p>
+                                            </div>
+                                        </div>
+                                        <div class="actions col-sm-4 col-md-12" ng-show="result.InboundLeg">
+                                            <a ng-href="{{::result.PricingOptions[0].DeeplinkUrl}}" target="_blank"
+                                               rel="nofollow" ng-if="result.PricingOptions[0].DeeplinkUrl"
+                                               class="button book-btn btn-small full-width">SELECT</a>
+                                            <a ng-if="!result.PricingOptions[0].DeeplinkUrl"
+                                               class="button btn-small full-width">UPDATING...</a>
+                                            <a class="button btn-small details-btn full-width"
+                                               ng-click="openFlightDetails(result)">Details</a>
+
+                                            <div class="deals" ng-show="result.PricingOptions.length>0">
+                                                <a ng-click="showDeals = !showDeals">{{::result.PricingOptions.length +
+                                                    ' '+ 'Deals'}}</a>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row one-way-actions" ng-show="!result.InboundLeg">
+                                <div>
+									<span class="row-button">
+										<a class="button btn-small details-btn full-width"
+                                           ng-click="openFlightDetails(result)">Details</a>
+									</span>
+									<span class="row-button">
+										<a ng-href="{{::result.PricingOptions[0].DeeplinkUrl}}" rel="nofollow"
+                                           target="_blank" ng-if="result.PricingOptions[0].DeeplinkUrl"
+                                           class="button book-btn btn-small full-width">SELECT</a>
+										<a ng-if="!result.PricingOptions[0].DeeplinkUrl"
+                                           class="button btn-small full-width">UPDATING...</a>
+										<a class="deals" ng-show="deals>0" ng-click="showDeals = !showDeals">
+                                            <span>{{::result.PricingOptions.length + ' '+ 'Deals'}}</span>
+                                        </a>
+									</span>
+                                </div>
+                            </div>
+                            <div class="deal-options" ng-repeat="option in result.PricingOptions" ng-show="showDeals">
+                                <div class="row option">
+                                    <div class="price-info col-xs-12 col-sm-8 col-md-10">
+                                        <div class="row">
+                                            <div class="agent col-sm-4 col-md-4">
+                                                <p>{{::option.Agents[0].Name}}</p>
+                                            </div>
+                                            <div class="col-xs-6 col-sm-4 col-md-4">
+                                                <p class="price">
+                                                    <span class="title">AVG/PERSON</span>
+                                                    <span class="value">{{currentCurrency.Symbol+' '+ (option.Price/(searchQuery.Adults+searchQuery.Children+searchQuery.Infants)  | currency:"":2)}}</span>
+                                                </p>
+                                            </div>
+                                            <div class="col-xs-6 col-sm-4 col-md-4">
+                                                <p class="price">
+                                                    <span class="title">TOTAL</span>
+                                                    <span class="value">{{currentCurrency.Symbol+' '+(option.Price| currency:"":2)}}</span>
+                                                </p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-xs-12 col-sm-4 col-md-2">
+                                        <div class="row">
+                                            <div class="col-sm-12 col-md-12">
+                                                <a ng-if="!option.DeeplinkUrl" class="button btn-small full-width">UPDATING...</a>
+                                                <a ng-href="{{::option.DeeplinkUrl}}" rel="nofollow" target="_blank"
+                                                   ng-if="option.DeeplinkUrl"
+                                                   class="button book-btn btn-small full-width">SELECT</a>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <!--</dummy>-->
+                    </div>
+                    <a class="button uppercase full-width btn-large"
+                       data-ng-hide="searchResults.length==totalCount() || !searchResults || searchResults.length==0"
+                       data-ng-click="loadNextPage()">load more listings</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+<div class="modal fade bs-example-modal-lg" tabindex="-1" role="dialog" id="details-modal">
+    <div class="modal-dialog modal-lg" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <a type="button" class="close" data-dismiss="modal" aria-label="Close"><span
+                        aria-hidden="true">&times;</span></a>
+                <h4 class="modal-title"><i class="soap-icon-plane-right yellow-color"></i> Flight Details</h4>
+            </div>
+            <div class="modal-body">
+                <div class="flight-details" ng-if="flightDetails">
+                    <div class="outbound one-side" ng-if="flightDetails.OutboundLeg">
+                        <div class="details">
+                            <div class="heading">
+                                <span class="title">Outbound Flight</span>
+                                <span class="stops"><a class="button btn-mini stop">STOPS :
+                                    {{::flightDetails.OutboundLeg.Stops.length}}</a></span>
+                                <span class="time">{{::getHourString(flightDetails.OutboundLeg.Duration)}}</span>
+                            </div>
+                            <dummy ng-repeat="segment in flightDetails.OutboundLeg.Segments">
+                                <div class="flight">
+                                    <div class="row">
+                                        <div class="col-md-2">
+                                            <div class="brand">
+                                                <div class="image">
+
+                                                    <img alt="" ng-src="{{::segment.Carrier.ImageUrl}}">
+                                                </div>
+                                                <div class="cabin">
+                                                    <p>{{::queryObj.cabinClass}}</p>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="information col-md-8">
+                                            <div class="row take-off">
+                                                <div class="col-md-6">
+                                                    <p class="title">TAKE OFF</p>
+
+                                                    <p class="info">
+                                                        {{::getDateStringWithDay2(segment.DepartureDateTime)}}</p>
+                                                </div>
+                                                <div class="col-md-6">
+                                                    <p class="title">{{::segment.OriginStation.Code}}</p>
+
+                                                    <p class="info">({{::segment.OriginStation.Name}})</p>
+                                                </div>
+                                            </div>
+                                            <div class="row">
+                                                <div class="col-md-6">
+                                                    <p class="title">LANDING</p>
+
+                                                    <p class="info">
+                                                        {{::getDateStringWithDay2(segment.ArrivalDateTime)}}</p>
+                                                </div>
+                                                <div class="col-md-6">
+                                                    <p class="title">{{::segment.DestinationStation.Code}}</p>
+
+                                                    <p class="info">({{::segment.DestinationStation.Name}})</p>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-2">
+                                            <div class="time">
+                                                <p class="title">Total Time</p>
+
+                                                <p class="info">{{::getShortHourString(segment.Duration)}}</p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="connection" ng-if="flightDetails.OutboundLeg.Segments[$index+1]">
+                                    <p>
+                                        <span>Connection of</span>
+                                        <span class="time">{{::getShortHourString(segment.Duration)}}</span>
+                                        <span>in</span>
+                                        <span class="location">{{::segment.DestinationStation.Name+' ('+segment.DestinationStation.Code+')'}}</span>
+                                    </p>
+                                </div>
+                            </dummy>
+                        </div>
+                    </div>
+                    <div class="inbound one-side" ng-if="flightDetails.InboundLeg">
+                        <div class="details">
+                            <div class="heading">
+                                <span class="title">Inbound Flight</span>
+                                <span class="stops"><a class="button btn-mini stop">STOPS :
+                                    {{::flightDetails.InboundLeg.Stops.length}}</a></span>
+                                <span class="time">{{::getHourString(flightDetails.InboundLeg.Duration)}}</span>
+                            </div>
+                            <dummy ng-repeat="segment in flightDetails.InboundLeg.Segments">
+                                <div class="flight">
+                                    <div class="row">
+                                        <div class="col-md-2">
+                                            <div class="brand">
+                                                <div class="image">
+                                                    <!--<dummy ng-if="segment.Carriers.length">
+                                                        <img alt="" ng-src="{{::segment.Carriers[0].ImageUrl}}" ng-if="segment.Carriers.length==1">
+                                                        <b ng-if="segment.Carriers.length>1" ng-repeat="carrier in segment.Carriers">{{::carrier.Name}}{{::$last ? '' : ', '}}</b>
+                                                    </dummy>-->
+
+                                                    <img alt="" ng-src="{{::segment.Carrier.ImageUrl}}">
+
+                                                </div>
+                                                <div class="cabin">
+                                                    <p>{{::queryObj.cabinClass}}</p>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="information col-md-8">
+                                            <div class="row take-off">
+                                                <div class="col-md-6">
+                                                    <p class="title">TAKE OFF</p>
+
+                                                    <p class="info">
+                                                        {{::getDateStringWithDay2(segment.DepartureDateTime)}}</p>
+                                                </div>
+                                                <div class="col-md-6">
+                                                    <p class="title">{{::segment.OriginStation.Code}}</p>
+
+                                                    <p class="info">({{::segment.OriginStation.Name}})</p>
+                                                </div>
+                                            </div>
+                                            <div class="row">
+                                                <div class="col-md-6">
+                                                    <p class="title">LANDING</p>
+
+                                                    <p class="info">
+                                                        {{::getDateStringWithDay2(segment.ArrivalDateTime)}}</p>
+                                                </div>
+                                                <div class="col-md-6">
+                                                    <p class="title">{{::segment.DestinationStation.Code}}</p>
+
+                                                    <p class="info">({{::segment.DestinationStation.Name}})</p>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-2">
+                                            <div class="time">
+                                                <p class="title">Total Time</p>
+
+                                                <p class="info">{{::getShortHourString(segment.Duration)}}</p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="connection" ng-if="flightDetails.InboundLeg.Segments[$index+1]">
+                                    <p>
+                                        <span>Connection of</span>
+                                        <span class="time">{{::getShortHourString(segment.Duration)}}</span>
+                                        <span>in</span>
+                                        <span class="location">{{::segment.DestinationStation.Name+' ('+segment.DestinationStation.Code+')'}}</span>
+                                    </p>
+                                </div>
+                            </dummy>
+                        </div>
+                    </div>
+                    <div class="deal-options" ng-repeat="option in flightDetails.PricingOptions">
+                        <div class="row option">
+                            <div class="price-info col-xs-12 col-sm-8 col-md-10">
+                                <div class="row">
+                                    <div class="agent col-sm-4 col-md-4">
+                                        <p>{{::option.Agents[0].Name}}</p>
+                                    </div>
+                                    <div class="col-xs-6 col-sm-4 col-md-4">
+                                        <p class="price">
+                                            <span class="title">AVG/PERSON</span>
+                                            <span class="value">{{currentCurrency.Symbol+' '+option.Price/(searchQuery.Adults+searchQuery.Children+searchQuery.Infants)}}</span>
+                                        </p>
+                                    </div>
+                                    <div class="col-xs-6 col-sm-4 col-md-4">
+                                        <p class="price">
+                                            <span class="title">TOTAL</span>
+                                            <span class="value">{{currentCurrency.Symbol+' '+(option.Price)}}</span>
+                                        </p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-xs-12 col-sm-4 col-md-2">
+                                <div class="row">
+                                    <div class="col-sm-12 col-md-12">
+                                        <a ng-if="!option.DeeplinkUrl"
+                                           class="button btn-small full-width">UPDATING...</a>
+                                        <a ng-href="{{::option.DeeplinkUrl}}" rel="nofollow" target="_blank"
+                                           ng-if="option.DeeplinkUrl" class="button book-btn btn-small full-width">SELECT</a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                </div>
+            </div>
+        </div>
+    </div>

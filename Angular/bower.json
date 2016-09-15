@@ -1,0 +1,48 @@
+{
+  "name": "travel",
+  "version": "0.0.0",
+  "dependencies": {
+    "angular": "^1.4.0",
+    "bootstrap": "3.3.6",
+    "angular-cookies": "^1.4.0",
+    "angular-messages": "^1.4.0",
+    "angular-resource": "^1.4.0",
+    "angular-sanitize": "^1.4.0",
+    "angular-touch": "^1.4.0",
+    "animate.css": "~3.5.2",
+    "bxslider-4": "~4.1.2",
+    "flexslider": "2.5.0",
+    "modernizr": "2.7.1",
+    "jquery-migrate": "1.2.1",
+    "jquery-placeholder": "2.0.8",
+    "jquery-ui": "1.10.4",
+    "jquery": "1.11.1",
+    "gmap3": "6.0.0",
+    "jquery.stellar": "stellar#0.6.2",
+    "jquery-waypoints": "waypoints#2.0.5",
+    "angular-ui-router": "~0.3.1",
+    "components-font-awesome": "~4.6.3",
+    "angucomplete-alt": "~2.4.1",
+    "moment": "~2.14.1",
+    "angularjs-slider": "~5.4.1"
+  },
+  "devDependencies": {
+    "angular-mocks": "^1.4.0"
+  },
+  "appPath": "app",
+  "moduleName": "travel",
+  "overrides": {
+    "bootstrap": {
+      "main": [
+        "less/bootstrap.less",
+        "dist/css/bootstrap.css",
+        "dist/js/bootstrap.js"
+      ]
+    },
+    "fontawesome": {
+      "main": [
+        "css/font-awesome.css"
+      ]
+    }
+  }
+}

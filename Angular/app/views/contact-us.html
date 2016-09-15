@@ -1,0 +1,83 @@
+<section id="content">
+    <div class="container">
+        <div id="main">
+            <div class="contact-address row block">
+                <div class="col-md-4">
+                    <div class="icon-box style5">
+                        <i class="soap-icon-recommend"></i>
+                        <div class="description">
+                            <small>Send us feedback on</small>
+                            <h5>feedback@comparebeforebook.com</h5>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="icon-box style5">
+                        <i class="soap-icon-message"></i>
+                        <div class="description">
+                            <small>Send us email on</small>
+                            <h5>info@comparebeforebook.com</h5>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="icon-box style5">
+                        <i class="soap-icon-businessbag"></i>
+                        <div class="description">
+                            <small>ADVERTISE WITH US</small>
+                            <h5>advertise@comparebeforebook.com</h5>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="travelo-box box-full">
+                <div class="contact-form">
+                    <div class="waiting-search" ng-show="loading">
+                        <p><i class="fa fa-spinner fa-pulse fa-3x fa-fw"></i>
+                            <span class="sr-only">Loading...</span></p>
+                    </div>
+                    <div class="success-message" ng-show="success"><span>Thanks for contacting us. We will get back to you soon.</span></div>
+                    <div class="success-message" ng-show="error"><span>There was a problem in contacting us. Kindly email us at the above email.</span></div>
+                    <h2 ng-hide="success || error">Send us a Message</h2>
+                    <form ng-hide="success"  name="contactUsForm" ng-init="focus={}" novalidate ng-submit="validateForm(contactUsForm) && sendEmail()">
+                        <div class="row">
+                            <div class="col-sm-4">
+                                <div class="form-group">
+                                    <label>Your Name</label>
+                                    <input type="text" ng-focus="focus.name=true" ng-blur="focus.name=false" ng-model="contactUsObj.name" name="name" class="input-text full-width"
+                                        required>
+                                    <span class="error-block" ng-show="!focus.name && contactUsForm.$submitted  && contactUsForm.name.$error.required">{{::messages.required}}</span>
+                                </div>
+                                <div class="form-group">
+                                    <label>Your Email</label>
+                                    <input type="email" ng-focus="focus.email=true" ng-blur="focus.email=false" ng-model="contactUsObj.email" name="email" class="input-text full-width"
+                                        required>
+                                    <span class="error-block" ng-show="!focus.email && contactUsForm.$submitted  && contactUsForm.email.$error.required">{{::messages.required}}</span>
+                                    <span class="error-block" ng-show="!focus.email && contactUsForm.$submitted  && contactUsForm.email.$error.email">{{::messages.invalidEmail}}</span>
+                                </div>
+                                <div class="form-group">
+                                    <label>Subject</label>
+                                    <input type="text" ng-focus="focus.subject=true" ng-blur="focus.subject=false" maxlength="200" ng-model="contactUsObj.subject"
+                                        name="subject" class="input-text full-width" required>
+                                    <span class="error-block" ng-show="!focus.subject && contactUsForm.$submitted  && contactUsForm.subject.$error.required">{{::messages.required}}</span>
+                                </div>
+                            </div>
+                            <div class="col-sm-8">
+                                <div class="form-group">
+                                    <label>Your Message</label>
+                                    <textarea name="message" ng-focus="focus.message=true" ng-blur="focus.message=false" maxlength="500" ng-model="contactUsObj.message"
+                                        rows="8" class="input-text full-width" placeholder="write message here" required></textarea>
+                                    <span class="error-block" ng-show="!focus.message && contactUsForm.$submitted  && contactUsForm.message.$error.required">{{::messages.required}}</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-sms-offset-6 col-sm-offset-6 col-md-offset-8 col-lg-offset-9">
+                            <button class="btn-medium full-width">SEND MESSAGE</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
